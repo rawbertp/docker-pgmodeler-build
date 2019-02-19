@@ -1,6 +1,6 @@
-# docker-pgmodeler
+# docker-pgmodeler-build
 
-pgmodeler in a container
+## Build pgmodeler in a container
 
 Modified https://github.com/ksylvan/docker-pgmodeler for building the Linux binaries only.
 
