@@ -1,8 +1,9 @@
 FROM debian:stretch-slim
 
-LABEL maintainer "Kayvan Sylvan <kayvansylvan@gmail.com>"
+ENV PG_VERSION 0.9.2-alpha1
+ENV DEST /out
 
-ENV PG_VERSION 0.9.1
+RUN mkdir -p ${DEST}
 
 ADD https://codeload.github.com/pgmodeler/pgmodeler/tar.gz/v${PG_VERSION} /usr/local/src/
 WORKDIR /usr/local/src/
@@ -15,12 +16,12 @@ RUN if [ ! -d pgmodeler-${PG_VERSION} ]; then tar xvzf v${PG_VERSION}; fi \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive \
      apt-get -y install ${BUILD_PKGS} ${RUNTIME_PKGS} \
-  && qmake pgmodeler.pro \
+  && qmake PREFIX=${DEST} pgmodeler.pro \
   && make && make install \
   && cd .. \
   && apt-get remove --purge -y $BUILD_PKGS \
   && rm -rf /var/lib/apt/lists/* \
-  && mkdir -p /usr/local/lib/pgmodeler/plugins \
-  && chmod 777 /usr/local/lib/pgmodeler/plugins
+  && mkdir -p ${DEST}/lib/pgmodeler/plugins \
+  && chmod 777 ${DEST}/lib/pgmodeler/plugins
 
-ENTRYPOINT ["/usr/local/bin/pgmodeler"]
+ENTRYPOINT ["/bin/bash"]
